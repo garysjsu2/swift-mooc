@@ -2,48 +2,42 @@ import feedparser
 
 d = feedparser.parse("https://www.edx.org/api/v2/report/course-feed/rss")
 
-print d['feed']['title']
-print len(d['entries'])
+#print d.entries[0].description_detail
+print d.entries[0]
 
 i = 0
 while (i < 100):
-    # title
-    print d['entries'][i]['title'].encode('ascii', 'ignore')
-    
-    # link
-    print d['entries'][i]['link']
+    #.encode('ascii', 'ignore')
 
-    # description
-    print d['entries'][i]['description'].encode('ascii', 'ignore')
+    print d.entries[i]['title'].encode('ascii', 'ignore')
 
-    # start
-    #print d['entries'][i]['description']['course:id']
+    print d.entries[i]['link'].encode('ascii', 'ignore')
 
-    # end
-    #print d['entries'][i]['course:end']
+    print d.entries[i]['description'].encode('ascii', 'ignore')
 
-    # self paced
-    #print d['entries'][i]['course:self_paced']
+    print d.entries[i]['course_self_paced'].encode('ascii', 'ignore')
 
-    # subtitle
-    #print d['entries'][i]['course:subtitle'].encode('ascii', 'ignore')
+    print d.entries[i]['course_subtitle'].encode('ascii', 'ignore')
 
-    # course instructors
-    #print d['entries'][i]['course:instructors'].encode('ascii', 'ignore')
+    #add logic to get all course subjects
+    print d.entries[i]['course_subject'].encode('ascii', 'ignore')
 
-    # course image banners
-    #print d['entries'][i]['course:image-banner']
+    print d.entries[i]['course_school'].encode('ascii', 'ignore')
 
-    # course image thumbnail
-    #print d['entries'][i]['course:image-thumbnail']
+    print d.entries[i]['staff_name'].encode('ascii', 'ignore')
 
-    # subject
-    #print d['entries'][i]['course:subject']
+    print d.entries[i]['staff_bio'].encode('ascii', 'ignore')
 
-    # school
-    #print d['entries'][i]['course:school']
+    print d.entries[i]['staff_image'].encode('ascii', 'ignore')
 
-    # staff name
-    #print d['entries'][i]['staff:name']
+    print d.entries[i]['course_video-youtube'].encode('ascii', 'ignore')
+
+    print d.entries[i]['course_image-banner'].encode('ascii', 'ignore')
+
+    print d.entries[i]['course_image-thumbnail'].encode('ascii', 'ignore')
+
+    print d.entries[i]['course_length'].encode('ascii', 'ignore')
+
+    print d.entries[i]['course_prerequisites'].encode('ascii', 'ignore')
 
     i = i + 1
