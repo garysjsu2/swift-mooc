@@ -1,9 +1,8 @@
+#reference:https://pythonhosted.org/feedparser/reference.html 
+
 import feedparser
 
 d = feedparser.parse("https://www.edx.org/api/v2/report/course-feed/rss")
-
-#print d.entries[0].description_detail
-print d.entries[0]
 
 i = 0
 while (i < 100):
