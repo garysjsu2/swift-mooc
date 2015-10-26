@@ -3,7 +3,7 @@
 import feedparser
 import MySQLdb
 
-db = MySQLdb.connect(host="localhost", user="root", passwd="yourpassword", db="moocs160")
+db = MySQLdb.connect(host="localhost", user="root", passwd="", db="moocs160")
 cur = db.cursor()
 
 rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
@@ -18,13 +18,18 @@ for rss_link in rss_links:
     d = feedparser.parse(rss_link)
 
     i = 0
-    while (i < 100):
+    numentries = len(d.entries)
+    print numentries
+    while (i < numentries): 
         entry = d.entries[i]
 
         coursetitle = ""
 
         if 'title' in entry:
             coursetitle = entry['title'].encode('ascii', 'ignore')
+            # take out single quote else will break sql statement
+            coursetitle = coursetitle.replace("'", " ") 
+            print coursetitle
 
         cur.execute("INSERT INTO course_data \
                        (id, title, short_desc, long_desc, course_link, \
@@ -37,8 +42,6 @@ for rss_link in rss_links:
                        'a', 1, 'a', 'yes', 'a', \
                        '2015-10-1')" % (coursetitle))
         db.commit()
-
-        print coursetitle
         i = i + 1
                     
         """
