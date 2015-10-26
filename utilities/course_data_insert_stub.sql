@@ -7,4 +7,6 @@ VALUES
 (DEFAULT, 'a', 'a', 'a', 'a',
 'a', '2015-10-1', 1, 'a', 'a', 
 'a', 1, 'a', 'yes', 'a',
-'2015-10-1')
+'2015-10-1');
+
+select * from course_data;
