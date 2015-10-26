@@ -1,9 +1,9 @@
-#reference:https://pythonhosted.org/feedparser/reference.html 
+# reference:https://pythonhosted.org/feedparser/reference.html
 
 import feedparser
 import MySQLdb
 
-db = MySQLdb.connect(host="localhost", user="root", passwd="", db="moocs160")
+db = MySQLdb.connect(host="localhost", user="root", passwd="yourpassword", db="moocs160")
 cur = db.cursor()
 
 rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
@@ -16,17 +16,31 @@ rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
 
 for rss_link in rss_links:
     d = feedparser.parse(rss_link)
-    
+
     i = 0
     while (i < 100):
-        #.encode('ascii', 'ignore')
         entry = d.entries[i]
 
+        coursetitle = ""
+
         if 'title' in entry:
-            print entry['title'].encode('ascii', 'ignore')
+            coursetitle = entry['title'].encode('ascii', 'ignore')
 
-        
+        cur.execute("INSERT INTO course_data \
+                       (id, title, short_desc, long_desc, course_link, \
+                       video_link, start_date, course_length, course_image, category, \
+                       site, course_fee, language, certificate, university, \
+                       time_scraped) \
+                       VALUES \
+                       (DEFAULT, '%s', 'a', 'a', 'a', \
+                       'a', '2015-10-1', 1, 'a', 'a', \
+                       'a', 1, 'a', 'yes', 'a', \
+                       '2015-10-1')" % (coursetitle))
+        db.commit()
 
+        print coursetitle
+        i = i + 1
+                    
         """
         print d.entries[i]['title'].encode('ascii', 'ignore')
 
@@ -41,7 +55,7 @@ for rss_link in rss_links:
         #add logic to get all course subjects
         print d.entries[i]['course_subject'].encode('ascii', 'ignore')
 
-        print d.entries[i]['course_school'].encode('ascii', 'ignore') 
+        print d.entries[i]['course_school'].encode('ascii', 'ignore')
 
         #print d.entries[i]['staff_name'].encode('ascii', 'ignore')
 
@@ -59,4 +73,5 @@ for rss_link in rss_links:
 
         print d.entries[i]['course_prerequisites'].encode('ascii', 'ignore')
         """
-        i = i + 1
+
+db.close()
