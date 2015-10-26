@@ -2,6 +2,7 @@
 
 import feedparser
 import MySQLdb
+from datetime import datetime
 
 db = MySQLdb.connect(host="localhost", user="root", passwd="", db="moocs160")
 cur = db.cursor()
@@ -25,11 +26,80 @@ for rss_link in rss_links:
 
         coursetitle = ""
 
+        title = ''
         if 'title' in entry:
-            coursetitle = entry['title'].encode('ascii', 'ignore')
+            title = entry['title'].encode('ascii', 'ignore')
             # take out single quote else will break sql statement
-            coursetitle = coursetitle.replace("'", " ") 
-            print coursetitle
+            title = title.replace("'", " ") 
+            print title
+
+        short_desc = ''
+        if 'course_subtitle' in entry:
+            short_desc = entry['course_subtitle'].encode('ascii', 'ignore')
+            short_desc = short_desc.replace("'", " ") 
+            print short_desc
+
+        long_desc = ''
+        if 'summary' in entry:
+            long_desc = entry['summary'].encode('ascii', 'ignore')
+            long_desc = long_desc.replace("'", " ") 
+            print long_desc
+
+        course_link = ''
+        if 'link' in entry:
+            course_link = entry['link'].encode('ascii', 'ignore')
+            print course_link
+
+        video_link = ''
+        if 'video_youtube' in entry:
+            video_link = entry['video_youtube'].encode('ascii', 'ignore')
+            print video_link
+
+        start_date = ''
+        if 'course_start' in entry:
+            start_date = entry['course_start'].encode('ascii', 'ignore')
+            print start_date
+
+        course_length = 0
+        if 'course_length' in entry:
+            course_length = entry['course_length'].encode('ascii', 'ignore')
+            course_length = course_length[0:1]
+            print course_length
+
+        course_image = ''
+        if 'image_thumbnail' in entry:
+            course_image = entry['image_thumbnail'].encode('ascii', 'ignore')
+            print course_image
+
+        # only getting one category for now
+        category = ''
+        if 'course_subject' in entry:
+            category = entry['course_subject'].encode('ascii', 'ignore')
+            category = category.replace("'", " ") 
+            print category
+
+        # what is site supposed to correspond to?
+        site = ''
+
+        # no info on course fee?
+        course_fee = 0
+
+        language = ''
+        if 'language' in entry:
+            language = entry['language'].encode('ascii', 'ignore')
+            print language
+
+        # no info on certificates?
+        # yes for now
+        certificate = 'yes'
+
+        university = ''
+        if 'school' in entry:
+            university = entry['school'].encode('ascii', 'ignore')
+            university = university.replace("'", " ") 
+            print university
+
+        time_scraped = datetime.now()
 
         cur.execute("INSERT INTO course_data \
                        (id, title, short_desc, long_desc, course_link, \
@@ -37,44 +107,14 @@ for rss_link in rss_links:
                        site, course_fee, language, certificate, university, \
                        time_scraped) \
                        VALUES \
-                       (DEFAULT, '%s', 'a', 'a', 'a', \
-                       'a', '2015-10-1', 1, 'a', 'a', \
-                       'a', 1, 'a', 'yes', 'a', \
-                       '2015-10-1')" % (coursetitle))
+                       (DEFAULT, '%s', '%s', '%s', '%s', \
+                       '%s', '%s', %d, '%s', '%s', \
+                       '%s', %d, '%s', %s, '%s', \
+                       '%s)" % (title, short_desc, long_desc, course_link, video_link,
+                                        start_date, course_length, course_image, category,
+                                        site, course_fee, language, certificate, university,
+                                        time_scraped))
         db.commit()
         i = i + 1
-                    
-        """
-        print d.entries[i]['title'].encode('ascii', 'ignore')
-
-        print d.entries[i]['link'].encode('ascii', 'ignore')
-
-        print d.entries[i]['description'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_self_paced'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_subtitle'].encode('ascii', 'ignore')
-
-        #add logic to get all course subjects
-        print d.entries[i]['course_subject'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_school'].encode('ascii', 'ignore')
-
-        #print d.entries[i]['staff_name'].encode('ascii', 'ignore')
-
-        print d.entries[i]['staff_bio'].encode('ascii', 'ignore')
-
-        print d.entries[i]['staff_image'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_video-youtube'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_image-banner'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_image-thumbnail'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_length'].encode('ascii', 'ignore')
-
-        print d.entries[i]['course_prerequisites'].encode('ascii', 'ignore')
-        """
-
+        
 db.close()
