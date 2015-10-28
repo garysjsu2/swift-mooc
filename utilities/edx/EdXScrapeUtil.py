@@ -4,7 +4,7 @@ import feedparser
 import MySQLdb
 from datetime import datetime
 
-db = MySQLdb.connect(host="localhost", user="root", passwd="", db="moocs160")
+db = MySQLdb.connect(host="localhost", user="root", passwd="yourpassword", db="moocs160")
 cur = db.cursor()
 
 rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
@@ -142,7 +142,7 @@ for rss_link in rss_links:
                        (id, title, profname, profimage, course_id) \
                        VALUES \
                        ((SELECT id FROM course_data WHERE long_desc = '%s'), \
-                        '%s', '%s', '%s', '%s'" % (long_desc, title, profname, profimage, course_id))
+                        '%s', '%s', '%s'" % (long_desc, title, profname, profimage, course_id))
 
         db.commit()
 
