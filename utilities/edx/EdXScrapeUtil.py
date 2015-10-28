@@ -93,6 +93,7 @@ for rss_link in rss_links:
             print language
 
         # no info on certificates?
+
         # yes for now
         certificate = 'yes'
 
@@ -142,7 +143,7 @@ for rss_link in rss_links:
                        (id, title, profname, profimage, course_id) \
                        VALUES \
                        ((SELECT id FROM course_data WHERE long_desc = '%s'), \
-                        '%s', '%s', '%s'" % (long_desc, title, profname, profimage, course_id))
+                        '%s', '%s', '%s', '%s'" % (long_desc, title, profname, profimage, course_id))
 
         db.commit()
 
