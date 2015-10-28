@@ -24,6 +24,8 @@ for rss_link in rss_links:
     while (i < numentries):
         entry = d.entries[i]
 
+        """ insert into course_data """
+
         title = ''
         if 'title' in entry:
             title = entry['title'].encode('ascii', 'ignore')
@@ -115,6 +117,36 @@ for rss_link in rss_links:
                                 video_link, start_date, course_length, course_image, category,
                                 site, course_fee, language, university))
         db.commit()
+
+        """ insert into coursedetails """
+    
+        profname = ''
+        if 'staff_name' in entry:
+            profname = entry['staff_name'].encode('ascii', 'ignore')
+            profname = profname.replace("'", " ")
+            print profname
+        
+        profimage = ''
+        if 'staff_image' in entry:
+            profimage = entry['staff_image'].encode('ascii', 'ignore')
+            profimage = profimage.replace("'", " ")
+            print profname
+
+        course_id = ''
+        if 'course_id' in entry:
+            course_id = entry['course_id'].encode('ascii', 'ignore')
+            course_id = profimage.replace("'", " ")
+            print course_id
+
+        cur.execute("INSERT INTO coursedetails \
+                       (id, title, profname, profimage, course_id) \
+                       VALUES \
+                       ((SELECT id FROM course_data WHERE long_desc = '%s'), \
+                        '%s', '%s', '%s', '%s'" % (long_desc, title, profname, profimage, course_id))
+
+        db.commit()
+
         i = i + 1
+
 
 db.close()
