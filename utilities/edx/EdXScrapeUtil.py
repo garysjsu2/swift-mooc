@@ -125,6 +125,7 @@ for rss_link in rss_links:
         if 'staff_name' in entry:
             profname = entry['staff_name'].encode('ascii', 'ignore')
             profname = profname.replace("'", " ")
+            profname = profname[0:29] # 30 chars max
             print profname
         
         profimage = ''
@@ -136,8 +137,8 @@ for rss_link in rss_links:
         cur.execute("INSERT INTO coursedetails \
                        (id, profname, profimage, course_id) \
                        VALUES \
-                       (DEFAULT, '%s', '%s', (SELECT id FROM course_data WHERE short_desc='%s'))"
-                       % (profname, profimage, short_desc))
+                       (DEFAULT, '%s', '%s', (SELECT id FROM course_data WHERE course_link='%s'))"
+                       % (profname, profimage, course_link))
 
         db.commit()
 
