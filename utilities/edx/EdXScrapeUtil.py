@@ -134,10 +134,14 @@ for rss_link in rss_links:
             profimage = profimage.replace("'", " ")
             print profname
 
+        # note: there are some duplicate courses on edx. used the LIMIT keyword to handle those cases.
+        # get some duplicate data and this is a bit of a hacky solution. should probably do a similar
+        # select query to get the corresponding course id from course_data, then do a row count to see if
+        # there are duplicates, if there are duplicates then skip
         cur.execute("INSERT INTO coursedetails \
                        (id, profname, profimage, course_id) \
                        VALUES \
-                       (DEFAULT, '%s', '%s', (SELECT id FROM course_data WHERE course_link='%s'))"
+                       (DEFAULT, '%s', '%s', (SELECT id FROM course_data WHERE course_link='%s' LIMIT 1))"
                        % (profname, profimage, course_link))
 
         db.commit()
