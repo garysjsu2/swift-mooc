@@ -4,7 +4,7 @@ import feedparser
 import MySQLdb
 from datetime import datetime
 
-db = MySQLdb.connect(host="localhost", user="root", passwd="jameslin", db="moocs160")
+db = MySQLdb.connect(host="localhost", user="root", passwd="your_password", db="moocs160")
 cur = db.cursor()
 
 rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
