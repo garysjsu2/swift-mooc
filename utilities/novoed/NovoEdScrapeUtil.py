@@ -69,7 +69,7 @@ for course in res_json['courses']:
 	course_length = 0
 	course_image = course['large_cover_photo_url']
 	category = course['get_catalog_name'].encode('ascii', 'ignore')
-	site = '' 
+	site = 'NovoEd' 
 	course_fee = 0
 	language = 'EN' 
 	certificate = 'yes'

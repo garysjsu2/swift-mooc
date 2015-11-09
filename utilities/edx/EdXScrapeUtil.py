@@ -81,8 +81,7 @@ for rss_link in rss_links:
             category = category.replace("'", " ")
             print category
 
-        # what is site supposed to correspond to?
-        site = ''
+        site = 'EdX'
 
         # no info on course fee?
         course_fee = 0
