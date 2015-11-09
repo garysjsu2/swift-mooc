@@ -51,8 +51,8 @@ for rss_link in rss_links:
             print course_link
 
         video_link = ''
-        if 'video_youtube' in entry:
-            video_link = entry['video_youtube'].encode('ascii', 'ignore')
+        if 'course_video-youtube' in entry:
+            video_link = entry['course_video-youtube'].encode('ascii', 'ignore')
             print video_link
 
         start_date = ''
@@ -70,8 +70,8 @@ for rss_link in rss_links:
                 course_length = 0
 
         course_image = ''
-        if 'image_thumbnail' in entry:
-            course_image = entry['image_thumbnail'].encode('ascii', 'ignore')
+        if 'course_image-thumbnail' in entry:
+            course_image = entry['course_image-thumbnail'].encode('ascii', 'ignore')
             print course_image
 
         # only getting one category for now
@@ -86,10 +86,7 @@ for rss_link in rss_links:
         # no info on course fee?
         course_fee = 0
 
-        language = ''
-        if 'language' in entry:
-            language = entry['language'].encode('ascii', 'ignore')
-            print language
+        language = 'en'
 
         # no info on certificates?
 
