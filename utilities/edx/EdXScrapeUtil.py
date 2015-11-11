@@ -4,7 +4,7 @@ import feedparser
 import MySQLdb
 from datetime import datetime
 
-db = MySQLdb.connect(host="localhost", user="root", passwd="", db="moocs160")
+db = MySQLdb.connect(host="localhost", user="root", passwd="jameslin", db="moocs160")
 cur = db.cursor()
 
 rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
@@ -14,6 +14,37 @@ rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
              "https://www.edx.org/api/v2/report/course-feed/rss?page=4",
              "https://www.edx.org/api/v2/report/course-feed/rss?page=5",
              "https://www.edx.org/api/v2/report/course-feed/rss?page=6"]
+
+def add_profs_detail(c_id, profname, profimage):
+    # note: there are some duplicate courses on edx. used the LIMIT keyword to handle those cases.
+    # get some duplicate data and this is a bit of a hacky solution. should probably do a similar
+    # select query to get the corresponding course id from course_data, then do a row count to see if
+    # there are duplicates, if there are duplicates then skip
+    cur.execute("INSERT INTO coursedetails \
+                    (id, profname, profimage, course_id) \
+                    VALUES \
+                    (%d, '%s', '%s', (SELECT id FROM course_data WHERE course_link='%s' LIMIT 1))"
+                    % (c_id, profname, profimage, course_link))
+
+    db.commit()
+    
+
+def add_course(title, short_desc, long_desc, course_link, video_link,
+                start_date, course_length, course_image, category, site,
+                course_fee, language, certificate, university, time_scraped):
+    cur.execute("INSERT INTO course_data \
+                    (id, title, short_desc, long_desc, course_link, \
+                    video_link, start_date, course_length, course_image, category, \
+                    site, course_fee, language, certificate, university, \
+                    time_scraped) \
+                    VALUES \
+                    (DEFAULT, '%s', '%s', '%s', '%s', \
+                    '%s', '%s', %d, '%s', '%s', \
+                    '%s', %d, '%s', 'yes', '%s', \
+                    NOW())" % (title, short_desc, long_desc, course_link,
+                            video_link, start_date, course_length, course_image, category,
+                            site, course_fee, language, university))
+    db.commit()
 
 for rss_link in rss_links:
     d = feedparser.parse(rss_link)
@@ -29,20 +60,19 @@ for rss_link in rss_links:
         title = ''
         if 'title' in entry:
             title = entry['title'].encode('ascii', 'ignore')
-            # take out single quote else will break sql statement
-            title = title.replace("'", " ")
+            title = title.replace("'", "''")
             print title
 
         short_desc = ''
         if 'course_subtitle' in entry:
             short_desc = entry['course_subtitle'].encode('ascii', 'ignore')
-            short_desc = short_desc.replace("'", " ")
+            short_desc = short_desc.replace("'", "''")
             print short_desc
 
         long_desc = ''
         if 'summary' in entry:
             long_desc = entry['summary'].encode('ascii', 'ignore')
-            long_desc = long_desc.replace("'", " ")
+            long_desc = long_desc.replace("'", "''")
             print long_desc
 
         course_link = ''
@@ -78,69 +108,48 @@ for rss_link in rss_links:
         category = ''
         if 'course_subject' in entry:
             category = entry['course_subject'].encode('ascii', 'ignore')
-            category = category.replace("'", " ")
+            category = category.replace("'", "''")
             print category
 
         site = 'EdX'
 
-        # no info on course fee?
+        # no info on course fee
         course_fee = 0
 
         language = 'en'
 
-        # no info on certificates?
-
-        # yes for now
+        # no info on certificate
         certificate = 'yes'
 
         university = ''
         if 'school' in entry:
             university = entry['school'].encode('ascii', 'ignore')
-            university = university.replace("'", " ")
+            university = university.replace("'", "''")
             print university
 
         time_scraped = datetime.now()
 
-        cur.execute("INSERT INTO course_data \
-                       (id, title, short_desc, long_desc, course_link, \
-                       video_link, start_date, course_length, course_image, category, \
-                       site, course_fee, language, certificate, university, \
-                       time_scraped) \
-                       VALUES \
-                       (DEFAULT, '%s', '%s', '%s', '%s', \
-                       '%s', '%s', %d, '%s', '%s', \
-                       '%s', %d, '%s', 'yes', '%s', \
-                        NOW())" % (title, short_desc, long_desc, course_link,
-                                video_link, start_date, course_length, course_image, category,
-                                site, course_fee, language, university))
-        db.commit()
-
-        """ insert into coursedetails """
+        cur.execute('SELECT COUNT(*) FROM coursedetails')
+        (c_id,) = cur.fetchone()
     
         profname = ''
         if 'staff_name' in entry:
             profname = entry['staff_name'].encode('ascii', 'ignore')
-            profname = profname.replace("'", " ")
+            profname = profname.replace("'", "''")
             profname = profname[0:29] # 30 chars max
             print profname
         
         profimage = ''
         if 'staff_image' in entry:
             profimage = entry['staff_image'].encode('ascii', 'ignore')
-            profimage = profimage.replace("'", " ")
+            profimage = profimage.replace("'", "''")
             print profname
 
-        # note: there are some duplicate courses on edx. used the LIMIT keyword to handle those cases.
-        # get some duplicate data and this is a bit of a hacky solution. should probably do a similar
-        # select query to get the corresponding course id from course_data, then do a row count to see if
-        # there are duplicates, if there are duplicates then skip
-        cur.execute("INSERT INTO coursedetails \
-                       (id, profname, profimage, course_id) \
-                       VALUES \
-                       (DEFAULT, '%s', '%s', (SELECT id FROM course_data WHERE course_link='%s' LIMIT 1))"
-                       % (profname, profimage, course_link))
+        add_course(title, short_desc, long_desc, course_link, video_link, start_date,
+                     course_length, course_image, category, site, course_fee, language,
+                     certificate, university, time_scraped)
 
-        db.commit()
+        add_profs_detail(c_id, profname, profimage) 
 
         i = i + 1
 
