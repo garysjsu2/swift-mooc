@@ -4,7 +4,7 @@ import feedparser
 import MySQLdb
 from datetime import datetime
 
-db = MySQLdb.connect(host="localhost", user="root", passwd="jameslin", db="moocs160")
+db = MySQLdb.connect(host="localhost", user="root", passwd="", db="moocs160")
 cur = db.cursor()
 
 rss_links = ["https://www.edx.org/api/v2/report/course-feed/rss",
@@ -54,8 +54,6 @@ for rss_link in rss_links:
     print numentries
     while (i < numentries):
         entry = d.entries[i]
-
-        """ insert into course_data """
 
         title = ''
         if 'title' in entry:
