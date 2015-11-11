@@ -2,6 +2,7 @@
 /**
  * File: view.php
  * @author Khan Ly <khantly@yahoo.com>
+ * @copyright (c) 2015 Khan Ly. All rights reserved.
  */
 
 include("header.php");
@@ -194,7 +195,7 @@ if ($result->num_rows > 0) {
 </tr>
 <tr>
   <td class="success">Site: </td>
-  <td class="success"><?php echo ($row['site'] != NULL) ? $row['site'] : $blank; ?></td>
+  <td class="success"><?php echo ($row['video_link'] != NULL) ? '<a href="' . $row['video_link'] . '">' .$row['video_link'] . '</a>' : $blank; ?></td>
 </tr>
 <tr>
   <td class="success">Course Fee: </td>
