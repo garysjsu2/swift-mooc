@@ -114,7 +114,7 @@ for rss_link in rss_links:
         # no info on course fee
         course_fee = 0
 
-        language = 'en'
+        language = 'English'
 
         # no info on certificate
         certificate = 'yes'

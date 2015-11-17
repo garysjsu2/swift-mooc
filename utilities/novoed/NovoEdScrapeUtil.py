@@ -71,7 +71,7 @@ for course in res_json['courses']:
 	category = course['get_catalog_name'].encode('ascii', 'ignore')
 	site = 'NovoEd' 
 	course_fee = 0
-	language = 'EN' 
+	language = 'English' 
 	certificate = 'yes'
 	university = course['institution_name'].encode('ascii', 'ignore')
 	time_scraped = datetime.now()
